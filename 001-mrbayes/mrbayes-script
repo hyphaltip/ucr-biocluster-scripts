@@ -1,0 +1,7 @@
+
+execute in-data.nex;
+lset nst=6 rates=invgamma;
+
+mcmc nchains=25 ngen=10000 samplefreq=10;
+
+sump burnin=250;

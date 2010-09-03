@@ -1,0 +1,2 @@
+diff <(./revcomp-fasta.pl animals.fasta) <(./revcomp-fasta.rb animals.fasta)
+diff <(./revcomp-fasta.py animals.fasta) <(./revcomp-fasta.rb animals.fasta)

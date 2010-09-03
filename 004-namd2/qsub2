@@ -1,0 +1,2 @@
+#!/bin/bash
+qsub -l nodes=$@:ppn=8 ./qsub2-namd2 -d `pwd`

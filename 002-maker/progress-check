@@ -1,0 +1,6 @@
+#!/bin/sh
+echo -n "Contigs total: "
+grep \> *fa | wc -l
+
+echo -n "Contigs compleated: "
+grep FINI *.output/*_master_datastore_index.log  | wc -l

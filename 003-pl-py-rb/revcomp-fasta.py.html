@@ -1,0 +1,64 @@
+<html>
+<head>
+<title>/srv/projects/biocluster-examples/003-pl-py-rb/revcomp-fasta.py.html</title>
+<meta name="Generator" content="Vim/7.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+</head>
+<body bgcolor="#000000" text="#ffffff">
+<pre>
+<font color="#00ffff">#!/usr/bin/python</font>
+<font color="#8080ff"><b>import</b></font> sys
+<font color="#8080ff"><b>import</b></font> string
+<font color="#8080ff"><b>from</b></font> math <font color="#8080ff"><b>import</b></font> ceil
+
+<font color="#00ffff"># Author: Eddie Cao</font>
+
+<font color="#ffff00"><b>def</b></font> <font color="#ffffff"><b>revcomp</b></font>(seq):
+    t = string.maketrans('<font color="#ff40ff"><b>ATCGatcg</b></font>', '<font color="#ff40ff"><b>TAGCtagc</b></font>')
+    <font color="#ffff00"><b>return</b></font> seq.translate(t)[::-1]
+
+<font color="#00ffff"># Simple Test</font>
+<font color="#00ffff"># print revcomp(&quot;ACCGGtTT&quot;)</font>
+
+FASTA_LINE_WIDTH = 75
+
+<font color="#ffffff"><b>if</b></font> len(sys.argv) != 2:
+        sys.stderr.write(
+&quot;&quot;&quot;<font color="#ff40ff"><b>USAGE: %(p)s forward.fasta &gt; reverse.fasta</b></font>
+<font color="#ff40ff"><b>       or</b></font>
+<font color="#ff40ff"><b>       %(p)s &lt;(echo -e </b></font><font color="#ff40ff">\&quot;</font><font color="#ff40ff"><b>&gt;dna1</b></font><font color="#ff40ff">\\</font><font color="#ff40ff"><b>nACCGGtTT</b></font><font color="#ff40ff">\&quot;</font><font color="#ff40ff"><b>)</b></font>
+
+<font color="#ff40ff"><b>This program reverse compliments DNA FASTA files.</b></font>
+<font color="#ff40ff"><b>Processing very large files is possible because</b></font>
+<font color="#ff40ff"><b>of streaming the input and output, as opposed to</b></font>
+<font color="#ff40ff"><b>storing DNA in memory.</b></font>
+&quot;&quot;&quot; % dict(p=sys.argv[0]))
+        sys.exit(1)
+
+INPUT_FILENAME = sys.argv[1]
+
+<font color="#00ffff"># Print a string on multiple lines. Each line is X characters or less.</font>
+<font color="#ffff00"><b>def</b></font> <font color="#ffffff"><b>print_wrapped_to</b></font>(x, long_ln):
+        <font color="#ffff00"><b>print</b></font> '<font color="#ff40ff">\n</font>'.join([
+                long_ln[(x*i):(x*(i+1))]
+                <font color="#ffffff"><b>for</b></font> i <font color="#ff6060"><b>in</b></font> range(int(ceil(len(long_ln)/float(x))))
+        ])
+
+<font color="#00ffff"># Read FASTA from filename that was given</font>
+f = file(INPUT_FILENAME)
+seq = ''
+<font color="#ffffff"><b>for</b></font> line <font color="#ff6060"><b>in</b></font> f:
+        line = line.strip()
+        <font color="#ffffff"><b>if</b></font> line.startswith('<font color="#ff40ff"><b>&gt;</b></font>'):
+                <font color="#ffffff"><b>if</b></font> seq: print_wrapped_to(FASTA_LINE_WIDTH, revcomp(seq))
+                <font color="#ffff00"><b>print</b></font> line
+                seq = ''
+        <font color="#ffffff"><b>else</b></font>:
+                seq += line
+
+<font color="#ffffff"><b>if</b></font> seq: print_wrapped_to(FASTA_LINE_WIDTH, revcomp(seq))
+
+f.close()
+</pre>
+</body>
+</html>

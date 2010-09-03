@@ -1,0 +1,82 @@
+<html>
+<head>
+<title>~/projects/016-pl-py-rb-examples/revcomp-fasta.pl.html</title>
+<meta name="Generator" content="Vim/7.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+</head>
+<style>body{color: white}</style>
+<body bgcolor="#000000">
+<pre>
+<font color="#ff40ff">#!/usr/bin/perl</font>
+
+<font color="#8080ff"># Author: Tyler Backman</font>
+
+<font color="#ffff00">sub</font><font color="#00ffff"> </font><font color="#00ffff">revcomp </font>{
+  <font color="#ffff00">my</font> <font color="#00ffff">$dna</font> = <font color="#ffff00">shift</font>;
+  <font color="#ffff00">my</font> <font color="#00ffff">$revcomp</font> = <font color="#ffff00">reverse</font>(<font color="#00ffff">$dna</font>);
+  <font color="#00ffff">$revcomp</font> =~ <font color="#ffff00">tr/</font><font color="#ff6060">ACGTacgt</font><font color="#ffff00">/</font><font color="#ff6060">TGCAtgca</font><font color="#ffff00">/</font>;
+  <font color="#ffff00">return</font> <font color="#00ffff">$revcomp</font>;
+}
+
+<font color="#ff40ff">use warnings</font>;
+<font color="#ff40ff">use strict</font>;
+
+<font color="#ffff00">my</font> <font color="#00ffff">$FASTA_LINE_WIDTH</font> = <font color="#ff6060">75</font>;
+<font color="#ffff00">if</font> (<font color="#00ffff">@ARGV</font> != <font color="#ff6060">1</font>) {
+  <font color="#ffff00">print</font> <font color="#ff6060">&quot;</font><font color="#ff6060">USAGE: </font><font color="#00ffff">$0</font><font color="#ff6060"> forward.fasta &gt; reverse.fasta</font><font color="#ff40ff">\n</font><font color="#ff6060">&quot;</font> .
+        <font color="#ff6060">&quot;</font><font color="#ff6060">       or</font><font color="#ff40ff">\n</font><font color="#ff6060">&quot;</font> .
+        <font color="#ff6060">&quot;</font><font color="#ff6060">       </font><font color="#00ffff">$0</font><font color="#ff6060"> &lt;(echo -e </font><font color="#ff40ff">\&quot;</font><font color="#ff6060">&gt;dna1</font><font color="#ff40ff">\\</font><font color="#ff6060">nACCGGtTT</font><font color="#ff40ff">\&quot;</font><font color="#ff6060">)</font><font color="#ff40ff">\n</font><font color="#ff6060">&quot;</font> .
+        <font color="#ff6060">&quot;</font><font color="#ff40ff">\n</font><font color="#ff6060">&quot;</font> .
+        <font color="#ff6060">&quot;</font><font color="#ff6060">This program reverse compliments DNA FASTA files.</font><font color="#ff40ff">\n</font><font color="#ff6060">&quot;</font> .
+        <font color="#ff6060">&quot;</font><font color="#ff6060">Processing very large files is possible because</font><font color="#ff40ff">\n</font><font color="#ff6060">&quot;</font> .
+        <font color="#ff6060">&quot;</font><font color="#ff6060">of streaming the input and output, as opposed to</font><font color="#ff40ff">\n</font><font color="#ff6060">&quot;</font> .
+        <font color="#ff6060">&quot;</font><font color="#ff6060">storing DNA in memory.</font><font color="#ff40ff">\n</font><font color="#ff6060">&quot;</font>;
+  <font color="#ffff00">exit</font>();
+}
+
+<font color="#8080ff">## Simple Test</font>
+<font color="#8080ff">#print revcomp(&quot;ACCGGtTT&quot;) . &quot;\n&quot;;</font>
+
+<font color="#8080ff"># Print a string on multiple lines. Each line is X characters or less.</font>
+<font color="#ffff00">sub</font><font color="#00ffff"> </font><font color="#00ffff">print_wrapped_to </font>{
+  <font color="#ffff00">my</font> <font color="#00ffff">$x</font> = <font color="#ffff00">shift</font>;
+  <font color="#ffff00">my</font> <font color="#00ffff">$long_line</font> = <font color="#ffff00">shift</font>;
+  <font color="#ffff00">my</font> <font color="#00ffff">$line_out</font> = <font color="#ff6060">&quot;&quot;</font>;
+
+  <font color="#ffff00">my</font> <font color="#00ffff">$length</font> = <font color="#ffff00">length</font>(<font color="#00ffff">$long_line</font>);
+  <font color="#ffff00">my</font> <font color="#00ffff">$count</font> = <font color="#ff6060">0</font>;
+
+  <font color="#ffff00">while</font> ((<font color="#00ffff">$x</font>*<font color="#00ffff">$count</font>) &lt; <font color="#00ffff">$length</font>)
+  {
+    <font color="#ffff00">my</font> <font color="#00ffff">$temp</font> = <font color="#ffff00">substr</font>(<font color="#00ffff">$long_line</font>, (<font color="#00ffff">$x</font>*<font color="#00ffff">$count</font>), <font color="#00ffff">$x</font>);
+    <font color="#00ffff">$count</font>++;
+    <font color="#ffff00">print</font> <font color="#00ffff">$temp</font> . <font color="#ff6060">&quot;</font><font color="#ff40ff">\n</font><font color="#ff6060">&quot;</font>;
+  }
+}
+
+<font color="#ffff00">my</font> <font color="#00ffff">$inFasta</font> = <font color="#00ffff">$ARGV[</font><font color="#ff6060">0</font><font color="#00ffff">]</font>;
+<font color="#ffff00">open</font>(<font color="#00ffff">INFASTA</font>, <font color="#ff6060">&quot;</font><font color="#ff6060">&lt; </font><font color="#00ffff">$inFasta</font><font color="#ff6060">&quot;</font>);
+
+<font color="#ffff00">my</font> <font color="#00ffff">$sequence</font> = <font color="#ff6060">&quot;&quot;</font>;
+
+<font color="#ffff00">while</font>(<font color="#ffff00">my</font> <font color="#00ffff">$thisLine</font> = <font color="#00ffff">&lt;INFASTA&gt;</font>) {
+    <font color="#ffff00">chomp</font>(<font color="#00ffff">$thisLine</font>);
+    <font color="#ffff00">if</font>(<font color="#00ffff">$thisLine</font> =~ <font color="#ffff00">m/</font><font color="#ff6060">^&gt;</font><font color="#ff40ff">(.*)</font><font color="#ffff00">/</font>) {
+        <font color="#ffff00">if</font>(<font color="#00ffff">$sequence</font> <font color="#ffff00">ne</font> <font color="#ff6060">&quot;&quot;</font>) {
+            <font color="#ffff00">print</font> print_wrapped_to(<font color="#00ffff">$FASTA_LINE_WIDTH</font>,revcomp(<font color="#00ffff">$sequence</font>))
+        }
+        <font color="#00ffff">$sequence</font> = <font color="#ff6060">&quot;&quot;</font>;
+        <font color="#ffff00">print</font> <font color="#ff6060">&quot;</font><font color="#ff6060">&gt;</font><font color="#00ffff">$1</font><font color="#ff40ff">\n</font><font color="#ff6060">&quot;</font>;
+    } <font color="#ffff00">else</font> {
+        <font color="#00ffff">$sequence</font> = <font color="#00ffff">$sequence</font> . <font color="#00ffff">$thisLine</font>;
+    }
+}
+
+<font color="#8080ff"># reverse complement sequence here</font>
+<font color="#ffff00">if</font>(<font color="#00ffff">$sequence</font> <font color="#ffff00">ne</font> <font color="#ff6060">&quot;&quot;</font>) {
+  <font color="#ffff00">print</font> print_wrapped_to(<font color="#00ffff">$FASTA_LINE_WIDTH</font>,revcomp(<font color="#00ffff">$sequence</font>))
+}
+<font color="#ffff00">close</font>(<font color="#00ffff">INFASTA</font>);
+</pre>
+</body>
+</html>

@@ -1,0 +1,9 @@
+export PATH=/opt/NAMD-2.6b2_Linux-amd64-TCP:$PATH
+NUM_CORES=`cat $PBS_NODEFILE | wc -l`
+uniq $PBS_NODEFILE | xargs -n 1 echo host > node.list
+
+echo "Will run on $NUM_CORES cores; 8 cores per node (ppn=8)"
+echo "On:"
+cat node.list
+
+time charmrun +p $NUM_CORES ++ppn 8 ++nodelist node.list `which namd2` *.conf &> out
