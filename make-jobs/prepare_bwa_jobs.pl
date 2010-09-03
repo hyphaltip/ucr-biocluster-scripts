@@ -22,9 +22,10 @@ for my $q ( @ARGV) {
     "#PBS -N $stem\n",
     "cd $cwd\n",
     "bwa aln -f $base.sai $fullname $q\n",
-    "bwa samse $fullname $base.sai $q | gzip -c > $base.sam.gz\n",
-    "samtools import ITAG1_genomic.fai -o $base.bam $base.sam.gz\n",
-    "samtools sort $base.bam\n",
+    "bwa samse -f $base.sam $fullname $base.sai $q\n",
+    "samtools import ITAG1_genomic.fai $base.sam $base.unsrt.bam\n",
+    "samtools sort $base.unsrt.bam $base\n",
+    "rm -f $base.sam $base.unsrt.bam\n",
     "samtools index $base.bam\n";
     close(JOB);
 }
