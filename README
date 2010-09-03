@@ -1,2 +1,6 @@
-The scripts in here are intended as either standalone or examples for job submissions on the UCR bioinformatics cluster (biocluster.ucr.edu)
+The scripts in here are intended as either standalone or examples for 
+job submissions on the UCR bioinformatics cluster (biocluster.ucr.edu)
 
+These are released to http://biocluster.ucr.edu/examples/
+and show up in the manuals. For example:
+  http://manuals.bioinformatics.ucr.edu/home/hpc#TOC-Example:-MrBayes
