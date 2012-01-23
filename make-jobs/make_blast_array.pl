@@ -4,7 +4,7 @@ use File::Spec;
 use Bio::SeqIO;
 use Getopt::Long;
 
-my $CPUS = 4;
+my $cpus = 4;
 my $home = $ENV{'HOME'};
 my $jobdir = File::Spec->catfile($home,'jobs');
 my $input  = File::Spec->catfile($home,'input');
@@ -23,7 +23,7 @@ GetOptions(
 	   's|size:i'    => \$qsize,
 	   'e|exe:s'     => \$exe,
            'id|uid:s' => \$uid,
-           'c|cpus:i'       => \$CPUS,
+           'c|cpus:i'       => \$cpus,
 	   'indir|input:s'  => \$input,
 	   'o|out|outdir:s' => \$outdir,
 	   'j|job|jobdir:s' => \$jobdir,
@@ -79,11 +79,11 @@ my $jobfile = ">$jobdir/$prefix\_$uid.sh";
 open my $fh => ">$jobfile" || die $!;
 chmod(0700,$jobfile);
 print $fh ( "#!/bin/bash\n",
-	    '#PBS'." -N $prefix\n",
-	    "#PBS -l nodes=1:ppn=$CPUS\n",
+	    '#PBS'." -N $uid\n",
+	    "#PBS -l nodes=1:ppn=$cpus\n",
 	    "source ~/.bash_profile\n",
     );
-print $fh "$exe $params -a $CPUS -i $input/$uid.\$PBSARRAY_ID.fa -d \"$db\" -o $outdir/$uid.\$PBSARRAY_ID.tab \n";
+print $fh "$exe $params -a $cpus -i $input/$uid.\$PBSARRAY_ID.fa -d \"$db\" -o $outdir/$uid.\$PBSARRAY_ID.tab \n";
 
 
 print "qsub -t 1-$setct%50 -j oe -o $outdir/$uid.BLAST.out $jobfile\n";
